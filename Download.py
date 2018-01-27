@@ -41,9 +41,9 @@ if __name__ == '__main__':
         for line in datalines:
             window_before = driver.window_handles[0]
             driver.find_element_by_id('ctl00_ContentPlaceHolder1_TextBox_NumSOB').clear()
-            sob = driver.find_element_by_id('ctl00_ContentPlaceHolder1_TextBox_NumSOB')
+            sob = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'ctl00_ContentPlaceHolder1_TextBox_NumSOB')))
             sob.send_keys(line)
-            driver.find_element_by_id('ctl00_ContentPlaceHolder1_ImageButton_Enviar').click()
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'ctl00_ContentPlaceHolder1_ImageButton_Enviar'))).click()
             try:
                 # Busca pela coluna com o número da Sob
                 numSob = driver.find_element_by_xpath('/html/body/form/table/tbody/tr[4]/td/div[3]/table/tbody/tr[2]/td[8][contains(text(), "' + line + '")]')
@@ -52,7 +52,7 @@ if __name__ == '__main__':
                     window_after = driver.window_handles[1]
                     driver.switch_to_window(window_after)
                     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="GridView_Solicitacoes_ctl02_ImageButton_Excel"]'))).click()
-                    # driver.find_element_by_xpath('//*[@id="GridView_Solicitacoes_ctl02_ImageButton_Excel"]').click()
+                    driver.close()
                     driver.switch_to_window(window_before)
             except NoSuchElementException:
                 log = open("ErroSobs.txt", "a")
