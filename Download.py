@@ -1,4 +1,5 @@
 import os
+import time
 from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
 import openpyxl
@@ -35,7 +36,6 @@ if __name__ == '__main__':
 
     # Insere o número da Sob em seu respectivo campo e realiza a busca
     sob = driver.find_element_by_id('ctl00_ContentPlaceHolder1_TextBox_NumSOB')
-
     with open('sobs.txt') as data:
         datalines = (line.rstrip('\r\n') for line in data)
         for line in datalines:
@@ -54,6 +54,11 @@ if __name__ == '__main__':
                     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="GridView_Solicitacoes_ctl02_ImageButton_Excel"]'))).click()
                     driver.close()
                     driver.switch_to_window(window_before)
+
+                    while os.path.exists('Relatorio_Gestao_Obra.xls.part'):
+                        time.sleep(1)
+                    if os.path.isfile('Relatorio_Gestao_Obra.xls'):
+                        os.rename('Relatorio_Gestao_Obra.xls', line + '.xls')
             except NoSuchElementException:
                 log = open("ErroSobs.txt", "a")
                 log.write(line + "\n")
