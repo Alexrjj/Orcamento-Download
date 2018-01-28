@@ -48,18 +48,19 @@ if __name__ == '__main__':
                 # Busca pela coluna com o número da Sob
                 numSob = driver.find_element_by_xpath('/html/body/form/table/tbody/tr[4]/td/div[3]/table/tbody/tr[2]/td[8][contains(text(), "' + line + '")]')
                 if numSob.is_displayed():
-                    numTrab = driver.find_element_by_xpath('//*[@id="ctl00_ContentPlaceHolder1_Gridview_GomNet1"]/tbody/tr[2]/td[4]').text
+                    numSobArquivo = driver.find_element_by_xpath('//*[@id="ctl00_ContentPlaceHolder1_Gridview_GomNet1"]/tbody/tr[2]/td[8]').text
+                    numTrabArquivo = driver.find_element_by_xpath('//*[@id="ctl00_ContentPlaceHolder1_Gridview_GomNet1"]/tbody/tr[2]/td[4]').text
                     driver.find_element_by_xpath('//*[@id="ctl00_ContentPlaceHolder1_Gridview_GomNet1_ctl02_ImageButton_OrcamentoConstrutivo"]').click()
                     window_after = driver.window_handles[1]
                     driver.switch_to_window(window_after)
                     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="GridView_Solicitacoes_ctl02_ImageButton_Excel"]'))).click()
                     driver.close()
                     driver.switch_to_window(window_before)
-
+                    # Aguarda o download completo do arquivo para então renomeá-lo
                     while os.path.exists('Relatorio_Gestao_Obra.xls.part'):
-                        time.sleep(0.5)
+                        time.sleep(5)
                     if os.path.isfile('Relatorio_Gestao_Obra.xls'):
-                        os.rename('Relatorio_Gestao_Obra.xls', line + ' ' + numTrab + '.xls')
+                        os.rename('Relatorio_Gestao_Obra.xls', numSobArquivo + ' ' + numTrabArquivo + '.xls')
             except NoSuchElementException:
                 log = open("ErroSobs.txt", "a")
                 log.write(line + "\n")
