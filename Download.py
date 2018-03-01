@@ -15,13 +15,13 @@ consulta = 'http://gomnet.ampla.com/ConsultaObra.aspx'
 username = login['A1'].value
 password = login['A2'].value
 
-# Configurações do browser
-profile = webdriver.FirefoxProfile()
-profile.set_preference('browser.download.folderList', 2)
-profile.set_preference('browser.download.manager.showWhenStarting', False)
-profile.set_preference('browser.download.dir', os.getcwd())
-profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/vnd.ms-excel')
-driver = webdriver.Firefox(profile)
+# Configurações do Browser
+chromeOptions = webdriver.ChromeOptions()
+prefs = {"download.default_directory": os.getcwd(),
+         "download.prompt_for_download": False}
+chromeOptions.add_experimental_option("prefs", prefs)
+# chromeOptions.add_argument('--headless')
+driver = webdriver.Chrome(chrome_options=chromeOptions)
 
 if __name__ == '__main__':
     driver.get(url)
@@ -57,8 +57,8 @@ if __name__ == '__main__':
                     driver.close()
                     driver.switch_to_window(window_before)
                     # Aguarda o download completo do arquivo para então renomeá-lo
-                    while os.path.exists('Relatorio_Gestao_Obra.xls.part'):
-                        time.sleep(5)
+                    while not os.path.exists('Relatorio_Gestao_Obra.xls'):
+                        time.sleep(3)
                     if os.path.isfile('Relatorio_Gestao_Obra.xls'):
                         os.rename('Relatorio_Gestao_Obra.xls', numSobArquivo + ' ' + numTrabArquivo + '.xls')
             except NoSuchElementException:
